@@ -271,7 +271,7 @@ em { font-style: italic; }
 /* ============ About ============ */
 .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
 .about-photo { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); position: sticky; top: 110px; }
-.about-photo img { width: 100%; aspect-ratio: 4 / 4.6; object-fit: cover; transform: scale(1.12); }
+.about-photo img { width: 100%; aspect-ratio: 4 / 4.6; object-fit: cover; transform: scale(1.05); }
 .about-copy .lead { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.35; margin-bottom: 22px; }
 .about-copy .lead em { color: var(--accent); }
 .about-copy > p:not(.lead) { color: var(--ink-soft); margin-bottom: 30px; }
