@@ -170,28 +170,43 @@
     });
   });
 
-  /* ---------- Cards ---------- */
-  ScrollTrigger.batch(".works-grid .work", {
-    start: "top 90%",
-    onEnter: function (batch) {
-      gsap.from(batch, { y: 44, autoAlpha: 0, duration: 0.7, stagger: 0.09, ease: "power3.out" });
-    },
-    once: true
+  /* ---------- Cards (per-element reveals; robust in multi-column grids) ---------- */
+  gsap.utils.toArray(".works-grid .work").forEach(function (card, i) {
+    gsap.from(card, {
+      y: 40, autoAlpha: 0, duration: 0.7, ease: "power3.out",
+      delay: (i % 3) * 0.08,
+      scrollTrigger: { trigger: card, start: "top 94%", once: true }
+    });
   });
-  ScrollTrigger.batch(".service", {
-    start: "top 90%",
-    onEnter: function (batch) {
-      gsap.from(batch, { x: -36, autoAlpha: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" });
-    },
-    once: true
+  gsap.utils.toArray(".service").forEach(function (el) {
+    gsap.from(el, {
+      x: -36, autoAlpha: 0, duration: 0.65, ease: "power3.out",
+      scrollTrigger: { trigger: el, start: "top 92%", once: true }
+    });
   });
-  ScrollTrigger.batch(".cred, .edu", {
-    start: "top 92%",
-    onEnter: function (batch) {
-      gsap.from(batch, { y: 36, autoAlpha: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" });
-    },
-    once: true
+  gsap.utils.toArray(".cred, .edu").forEach(function (el) {
+    gsap.from(el, {
+      y: 36, autoAlpha: 0, duration: 0.65, ease: "power3.out",
+      scrollTrigger: { trigger: el, start: "top 94%", once: true }
+    });
   });
+
+  /* Safety: rescue any card that is inside the viewport but still hidden
+     (never touches below-the-fold cards that are legitimately waiting to reveal) */
+  window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+  function rescueVisibleCards() {
+    document.querySelectorAll(".works-grid .work, .service, .cred, .edu").forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      var inView = r.top < window.innerHeight * 0.95 && r.bottom > 0;
+      if (inView && parseFloat(getComputedStyle(el).opacity) < 0.05) {
+        gsap.to(el, { autoAlpha: 1, y: 0, x: 0, duration: 0.4, overwrite: true });
+      }
+    });
+  }
+  window.addEventListener("scroll", function () {
+    if (rescueVisibleCards._t) return;
+    rescueVisibleCards._t = setTimeout(function () { rescueVisibleCards._t = null; rescueVisibleCards(); }, 250);
+  }, { passive: true });
 
   /* ---------- Parallax band ---------- */
   gsap.to(".band img", {
